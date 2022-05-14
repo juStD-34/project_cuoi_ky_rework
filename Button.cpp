@@ -13,33 +13,30 @@ void Button::setPos(int x_, int y_)
 
 bool Button::handleEvent( SDL_Event* e)
 {
-    if (e->type == SDL_MOUSEBUTTONUP)
+    if (e->type == SDL_MOUSEBUTTONDOWN)
     {
         int x,y;
         SDL_GetMouseState(&x, &y);
-
         bool inside = true;
-
         if (x < buttonRect.x)
         {
             inside = false;
-        }else
+        }
         if (y < buttonRect.y )
         {
             inside = false;
-        }else
-        if (y > buttonRect.y + buttonRect.h)
+        }
+        if (y > (buttonRect.y + buttonRect.h))
         {
             inside = false;
         }
-        else
-        if (x > buttonRect.x + buttonRect.w)
+        if (x > (buttonRect.x + buttonRect.w))
         {
             inside = false;
         }
-
         return inside;
     }
+    return false;
 }
 void Button::render(SDL_Renderer* gRenderer)
 {

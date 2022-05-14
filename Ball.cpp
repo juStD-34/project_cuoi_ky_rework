@@ -4,6 +4,7 @@
 
 using namespace std;
 
+const int ARROW_WIDTH = 32, ARROW_HEIGHT = 16;
 Ball::Ball(const int SCREEN_WIDTH, const int SCREEN_HEIGHT)
 {
     PosX = SCREEN_WIDTH/2 - BALL_WIDTH/2;
@@ -53,7 +54,7 @@ void Ball::handleEvent( SDL_Event& e )
     }
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE && isWin == false)
     {
-        isRolling = !isRolling;
+        isRolling = true;
         if (isRolling == false)
         {
             degeree = -90;
@@ -68,7 +69,7 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
         degeree += angular;
     } else
     {
-        speed +=0.8;
+        speed +=0.6;
         VelX = std::cos(degeree* M_PI / 180) * BALL_VEL;
         VelY = std::sin(degeree* M_PI / 180) * BALL_VEL;
 
@@ -78,11 +79,13 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
         {
             degeree = 180 - degeree;
             PosX = 0;
+            score +=100;
         }
         if (PosX + BALL_WIDTH > SCREEN_WIDTH)
         {
             degeree = 180 - degeree;
             PosX = SCREEN_WIDTH - BALL_WIDTH;
+            score +=100;
         }
         PosY += VelY;
 
@@ -91,6 +94,7 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
             degeree = -degeree;
             if (PosY <0) PosY =0;
             if (PosY + BALL_HEIGHT > SCREEN_HEIGHT) PosY = SCREEN_HEIGHT - BALL_HEIGHT;
+            score +=100;
         }
         if (ballInHole(holeX,holeY) == true)    
         {
@@ -99,8 +103,11 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
         }
         if (speed >= 60)
         { 
-            isRolling = false;speed =0;countPlay ++;
+            isRolling = false;
+            speed =0;
+            countPlay ++;
             if (countPlay >= MAX_PLAY ) isLose = true;
+            degeree = -90;
         }
         SDL_Delay(speed);
 
@@ -113,9 +120,9 @@ void Ball::render(renderTexture& ballTexture, SDL_Renderer*& gRenderer, renderTe
     {
         if (isRolling == false)
         {
-            SDL_Point center = {0,2};
-            int arrowX = PosX + BALL_WIDTH/2;
-            int arrowY = PosY + BALL_HEIGHT/2;
+            SDL_Point center = {-4,2};
+            int arrowX = PosX + BALL_WIDTH/2 ;
+            int arrowY = PosY + BALL_HEIGHT/2 ;
             gArrow.render(gRenderer,arrowX ,arrowY , NULL, degeree, &center, SDL_FLIP_NONE);
         }
         ballTexture.render(gRenderer, PosX, PosY);

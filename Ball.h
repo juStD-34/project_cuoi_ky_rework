@@ -23,6 +23,7 @@ private:
 public:
     bool isWin ;
     bool isLose;
+    int score;
     const int BALL_WIDTH = 20;
     const int BALL_HEIGHT = 20;
 

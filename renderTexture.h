@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <iostream>
-
+#include <SDL_ttf.h>
 class renderTexture
 {
 private:
@@ -15,7 +15,7 @@ public:
     ~renderTexture();
 
     bool loadFromFile (std::string path, SDL_Renderer* gRenderer);
-
+    bool loadFromRenderedText(std::string path, SDL_Renderer* gRenderer, TTF_Font* gFont, SDL_Color& color);
     void free();
 
     void setColor (SDL_Color color);

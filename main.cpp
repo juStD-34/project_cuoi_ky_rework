@@ -6,6 +6,13 @@
 #include <cstdlib>
 using namespace std;
 
+SDL_Color WHITE = {255 , 255 , 255, 255},
+          BLACK = {0, 0, 0, 255},
+          GREEN = {0, 255, 0, 255},
+          RED = {255, 0, 0, 255},
+          BLUE = {0, 0, 255, 255},
+          SANDY_BROWN = {244,164, 96, 255}
+          ;
 const std::string INPUT_BALL = "ball4.png",
                   INPUT_ARROW = "arrow2.png",
                   INPUT_HOLE = "hole.png",
@@ -14,6 +21,7 @@ const std::string INPUT_BALL = "ball4.png",
                   RESTART_BUTTON_STR = "restart_button.png",
                   QUIT_BUTTON_STR = "quit_button.png",
                   START_BUTTON_STR = "start_button.png";
+std::string FONT_NAME = "Monique-RegularRound20.otf";
 const int SCREEN_WIDTH = 680,
           SCREEN_HEIGHT = 480,
           L_W_WIDTH = 200,
@@ -23,18 +31,16 @@ const int SCREEN_WIDTH = 680,
           QUIT_BUTTON_WIDTH = 100,
           QUIT_BUTTON_HEIGHT = 60,
           START_BUTTON_WIDTH = 350,
-          START_BUTTON_HEIGHT = 200;
+          START_BUTTON_HEIGHT = 200,
+          FONT_SIZE = 16;
+int HIGHSCR_X = 0, HIGHTSCR_Y = 0,
+    SCORE_X = 300, SCORE_Y = 0,
+    COUNT_PLAY_X = 600, COUNT_PLAY_Y = 0;
 
 SDL_Rect L_W_Rect ={SCREEN_WIDTH/2 - L_W_WIDTH/2 , SCREEN_HEIGHT/2 - L_W_HEIGHT/2 -140, L_W_WIDTH, L_W_HEIGHT};
 SDL_Rect RESTART_BUTTON_RECT = {SCREEN_WIDTH/2 - RES_BUTTON_WIDTH/2, SCREEN_HEIGHT - RES_BUTTON_HEIGHT/2 - 200, RES_BUTTON_WIDTH, RES_BUTTON_HEIGHT};
 SDL_Rect QUIT_BUTTON_RECT = {SCREEN_WIDTH/2 - QUIT_BUTTON_WIDTH/2, SCREEN_HEIGHT - QUIT_BUTTON_HEIGHT/2 - 100, QUIT_BUTTON_WIDTH, QUIT_BUTTON_HEIGHT};
 SDL_Rect START_BUTTON_RECT = {SCREEN_WIDTH/2 - START_BUTTON_WIDTH/2, SCREEN_HEIGHT/2 - RES_BUTTON_HEIGHT/2 -100, START_BUTTON_WIDTH, START_BUTTON_HEIGHT};
-SDL_Color WHITE = {255 , 255 , 255, 255},
-          BLACK = {0, 0, 0, 255},
-          GREEN = {0, 255, 0, 255},
-          RED = {255, 0, 0, 255},
-          BLUE = {0, 0, 255, 255}
-          ;
 
 class Hole
 {
@@ -77,7 +83,8 @@ public:
 
 bool init(SDL_Window*& gWindow, SDL_Renderer*& gRenderer);
 bool loadMedia(renderTexture& rendedTexture, SDL_Renderer* & gRenderer, const std::string& path);
-void close (renderTexture& ballTexture, renderTexture& arrowTexture , renderTexture& holeTexture,  SDL_Window*& gWindow, SDL_Renderer*& gRenderer);
+bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::string& textString, TTF_Font* & font);
+void close (renderTexture& ballTexture, renderTexture& arrowTexture , renderTexture& holeTexture,  SDL_Window*& gWindow, SDL_Renderer*& gRenderer, TTF_Font* font);
 
 
 int main(int argc, char* argv[])
@@ -87,6 +94,8 @@ int main(int argc, char* argv[])
     SDL_Renderer* gRenderer = NULL;
     renderTexture ballTexture, arrowTexture, holeTexture, loseTexture, winTexture;
     renderTexture restartTexture, quitTexture, startTexture;
+    renderTexture highScoreTexture, scoreTexture, countPlayTexture;
+    TTF_Font* font = NULL;
     Hole hole ;
     if (!init(gWindow,gRenderer))
     {
@@ -96,7 +105,7 @@ int main(int argc, char* argv[])
         if (!loadMedia(ballTexture,gRenderer,INPUT_BALL) || !loadMedia(arrowTexture,gRenderer,INPUT_ARROW)||!loadMedia(holeTexture,gRenderer, INPUT_HOLE)|| 
             !loadMedia(loseTexture,gRenderer,LOSE_BKG) || !loadMedia(winTexture, gRenderer, WIN_BKG)||
             !loadMedia(restartTexture,gRenderer,RESTART_BUTTON_STR)|| !loadMedia(quitTexture,gRenderer, QUIT_BUTTON_STR),
-            !loadMedia(startTexture,gRenderer,START_BUTTON_STR) )
+            !loadMedia(startTexture,gRenderer,START_BUTTON_STR))
         {
             std::cout<<"Failed to load media"<<std::endl;
         }
@@ -124,6 +133,7 @@ int main(int argc, char* argv[])
                     else
                     if ((ball.isWin == true || ball.isLose == true )&& restartButton.handleEvent(&e) == 1)
                     {
+                        if (ball.score > highestScore) highestScore = ball.score;
                         ball.resetBall(SCREEN_WIDTH,SCREEN_HEIGHT);
                         hole.resetHole();
                         break;
@@ -144,10 +154,24 @@ int main(int argc, char* argv[])
                 SDL_Point p = hole.getPos();
                 if (ball.isLose == false && ball.isWin == false && start == true) ball.move(SCREEN_WIDTH, SCREEN_HEIGHT,p.x, p.y);
 
-                SDL_SetRenderDrawColor(gRenderer, 0XFF, 0xFF,0xFF, 0xFF);
+                SDL_SetRenderDrawColor(gRenderer, WHITE.r, WHITE.g, WHITE.b, WHITE.a);
                 SDL_RenderClear( gRenderer);
                 if (start == true)
                 {
+                    std::string highScoreSTR ="HIGH SCORE : " + std::to_string(highestScore);
+                    std::string scoreSTR = "SCORE : " + std::to_string(ball.score);
+                    std::string countPlaySTR ="TURN : " + std::to_string(ball.countPlay);
+                    if (!loadFontMedia(highScoreTexture, gRenderer, highScoreSTR, font) || 
+                        !loadFontMedia(scoreTexture, gRenderer, scoreSTR, font) ||
+                        !loadFontMedia(countPlayTexture,gRenderer,countPlaySTR,font))
+                    {
+                        std::cout<<"Failed to load text texture"<<std::endl;
+                    }else 
+                    {
+                        highScoreTexture.render(gRenderer, HIGHSCR_X, HIGHTSCR_Y);
+                        scoreTexture.render(gRenderer, SCORE_X, SCORE_Y);
+                        countPlayTexture.render(gRenderer, COUNT_PLAY_X, COUNT_PLAY_Y);
+                    }
                     hole.render(holeTexture, gRenderer);
                     ball.render(ballTexture, gRenderer, arrowTexture);
                     if (ball.isWin == true) 
@@ -170,7 +194,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    close(ballTexture, arrowTexture,holeTexture ,gWindow, gRenderer);
+    close(ballTexture, arrowTexture,holeTexture ,gWindow, gRenderer, font);
     return 0;
 }
 
@@ -214,6 +238,12 @@ bool init(SDL_Window*& gWindow, SDL_Renderer*& gRenderer)
                     std::cout<<"SDL_image couldn't init! "<<IMG_GetError();
                     success = false;
                 }
+
+                if (TTF_Init() == -1)
+                {
+                    std::cout<<"SDL_ttf could not to init"<<TTF_GetError();
+                    success = false;
+                }
             }
         }
     }
@@ -232,16 +262,40 @@ bool loadMedia(renderTexture& rendedTexture, SDL_Renderer* & gRenderer,const std
     return success;
 }
 
-void close (renderTexture& ballTexture,renderTexture& arrowTexture ,renderTexture& holeTexture, SDL_Window*& gWindow, SDL_Renderer*& gRenderer)
+bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::string& textString, TTF_Font* & font)
+{
+    bool success= true;
+
+    font = TTF_OpenFont(FONT_NAME.c_str(), FONT_SIZE);
+    if (font == NULL)
+    {
+        std::cout<<"Failed to load font !"<<TTF_GetError();
+        success = false;
+    }else
+    {
+        if (rendTexture.loadFromRenderedText(textString,gRenderer,font,BLACK) == false)
+        {
+            std::cout<<"Failed to render text texture!";
+            success = false;
+        }
+    }
+
+    return success;
+
+}
+void close (renderTexture& ballTexture,renderTexture& arrowTexture ,renderTexture& holeTexture, SDL_Window*& gWindow, SDL_Renderer*& gRenderer, TTF_Font* font)
 {
     ballTexture.free();
     holeTexture.free();
     arrowTexture.free();
+    TTF_CloseFont(font);
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow( gWindow);
+    font = NULL;
     gRenderer = NULL;
     gWindow = NULL;
 
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 }

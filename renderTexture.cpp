@@ -43,6 +43,32 @@ bool renderTexture::loadFromFile(std::string path, SDL_Renderer* gRenderer)
     return mTexture != NULL;
 }
 
+bool renderTexture::loadFromRenderedText(std::string path, SDL_Renderer* gRenderer, TTF_Font* gFont, SDL_Color& color)
+{
+    free();
+    SDL_Surface* textSureface = TTF_RenderText_Solid(gFont, path.c_str(), color);
+    if (textSureface == NULL)
+    {
+        std::cout<<"Unable to render text surface "<<TTF_GetError();
+    }else
+    {
+        mTexture = SDL_CreateTextureFromSurface(gRenderer, textSureface);
+        if (mTexture == NULL)
+        {
+            std::cout<<"Unable to create texture from tendered"<<SDL_GetError();
+
+        }
+        else
+        {
+            width = textSureface->w;
+            height = textSureface->h;
+        }
+
+        SDL_FreeSurface(textSureface);
+    }
+
+    return mTexture!=NULL;
+}
 void renderTexture::free()
 {
     if (mTexture != NULL)

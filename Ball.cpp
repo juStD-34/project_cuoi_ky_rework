@@ -18,6 +18,7 @@ Ball::Ball(const int SCREEN_WIDTH, const int SCREEN_HEIGHT)
     degeree = -90;
     angular = 0;
     countPlay = 0;
+    score = 0;
 
     isRolling = false;
     isWin = false;
@@ -120,9 +121,9 @@ void Ball::render(renderTexture& ballTexture, SDL_Renderer*& gRenderer, renderTe
     {
         if (isRolling == false)
         {
-            SDL_Point center = {-4,2};
-            int arrowX = PosX + BALL_WIDTH/2 ;
-            int arrowY = PosY + BALL_HEIGHT/2 ;
+            SDL_Point center = {0,6/2 }; // arrow height /2
+            int arrowX = PosX + BALL_WIDTH/2 - 2 ;
+            int arrowY = PosY + BALL_HEIGHT/2 - 2;
             gArrow.render(gRenderer,arrowX ,arrowY , NULL, degeree, &center, SDL_FLIP_NONE);
         }
         ballTexture.render(gRenderer, PosX, PosY);
@@ -140,6 +141,7 @@ void Ball::resetBall(const int SCREEN_WIDTH, const int SCREEN_HEIGHT)
     degeree = -90;
     angular = 0;
     countPlay = 0;
+    score = 0;
 
     isRolling = false;
     isWin = false;
@@ -148,13 +150,13 @@ void Ball::resetBall(const int SCREEN_WIDTH, const int SCREEN_HEIGHT)
 
 bool Ball::ballInHole(int&  holeX, int& holeY)
 {
-    if (PosX + BALL_WIDTH/2 > holeX && PosX < holeX && PosY + BALL_HEIGHT/2 > holeY && PosY < holeY)
+    if (PosX + BALL_WIDTH/2 >= holeX && PosX <= holeX && PosY + BALL_HEIGHT/2 >= holeY && PosY <= holeY)
         return true;
-    if (PosX - BALL_WIDTH/2 < holeX && PosX > holeX && PosY + BALL_HEIGHT/2 > holeY && PosY < holeY)
+    if (PosX - BALL_WIDTH/2 <= holeX && PosX >= holeX && PosY + BALL_HEIGHT/2 >= holeY && PosY <= holeY)
         return true;
-    if (PosX + BALL_WIDTH/2 > holeX && PosX < holeX && PosY - BALL_HEIGHT/2 < holeY && PosY > holeY)
+    if (PosX + BALL_WIDTH/2 >= holeX && PosX <= holeX && PosY - BALL_HEIGHT/2 <= holeY && PosY >= holeY)
         return true;
-    if (PosX - BALL_WIDTH/2 < holeX && PosX > holeX && PosY - BALL_HEIGHT/2 < holeY && PosY > holeY)
+    if (PosX - BALL_WIDTH/2 <= holeX && PosX >= holeX && PosY - BALL_HEIGHT/2 <= holeY && PosY >= holeY)
         return true;
     
     return false;

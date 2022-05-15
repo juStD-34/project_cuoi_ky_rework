@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
-#include "ball.h"
+#include "src/Ball.h"
 #include <time.h>
 #include <cstdlib>
 using namespace std;
@@ -13,16 +13,16 @@ SDL_Color WHITE = {255 , 255 , 255, 255},
           BLUE = {0, 0, 255, 255},
           SANDY_BROWN = {244,164, 96, 255}
           ;
-const std::string INPUT_BALL = "ball4.png",
-                  INPUT_ARROW = "arrow2.png",
-                  INPUT_HOLE = "hole.png",
-                  WIN_BKG = "win background.png",
-                  LOSE_BKG = "lose background.png",
-                  RESTART_BUTTON_STR = "restart_button.png",
-                  QUIT_BUTTON_STR = "quit_button.png",
-                  START_BUTTON_STR = "start_button(1).png",
-                  HOW_PLAY_STR = "how_play_button.png",
-                  HOW_PLAY_SCREEN_STR = "how to play screen.png";
+const std::string INPUT_BALL = "image/ball4.png",
+                  INPUT_ARROW = "image/arrow2.png",
+                  INPUT_HOLE = "image/hole.png",
+                  WIN_BKG = "image/win background.png",
+                  LOSE_BKG = "image/lose background.png",
+                  RESTART_BUTTON_STR = "image/restart_button.png",
+                  QUIT_BUTTON_STR = "image/quit_button.png",
+                  START_BUTTON_STR = "image/start_button(1).png",
+                  HOW_PLAY_STR = "image/how_play_button.png",
+                  HOW_PLAY_SCREEN_STR = "image/how to play screen.png";
 std::string FONT_NAME = "Monique-RegularRound20.otf";
 const int SCREEN_WIDTH = 680,
           SCREEN_HEIGHT = 480,
@@ -50,6 +50,8 @@ SDL_Rect QUIT_BUTTON_RECT = {SCREEN_WIDTH/2 - QUIT_BUTTON_WIDTH/2, SCREEN_HEIGHT
 SDL_Rect START_BUTTON_RECT = {SCREEN_WIDTH/2 - START_BUTTON_WIDTH/2, SCREEN_HEIGHT/2 - RES_BUTTON_HEIGHT/2 -100, START_BUTTON_WIDTH, START_BUTTON_HEIGHT};
 SDL_Rect HOW_PLAY_BUTTON_RECT = { SCREEN_WIDTH/2 - HOW_PLAY_BUTTON_W/2 , SCREEN_HEIGHT/2 - HOW_PLAY_BUTTON_H/2 +100 , HOW_PLAY_BUTTON_W, HOW_PLAY_BUTTON_H};
 SDL_Rect HOW_PLAY_SCREEN_RECT = {HOW_PLAY_SCREEN_X, HOW_PLAY_SCREEN_Y, HOW_PLAY_SCREEN_W, HOW_PLAY_SCREEN_H};
+
+
 class Hole
 {
 private:

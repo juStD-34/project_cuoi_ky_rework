@@ -107,6 +107,7 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
             isRolling = false;
             speed =0;
             countPlay ++;
+            score -= 200;
             if (countPlay >= MAX_PLAY ) isLose = true;
             degeree = -90;
         }

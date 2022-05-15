@@ -20,28 +20,36 @@ const std::string INPUT_BALL = "ball4.png",
                   LOSE_BKG = "lose background.png",
                   RESTART_BUTTON_STR = "restart_button.png",
                   QUIT_BUTTON_STR = "quit_button.png",
-                  START_BUTTON_STR = "start_button.png";
+                  START_BUTTON_STR = "start_button(1).png",
+                  HOW_PLAY_STR = "how_play_button.png",
+                  HOW_PLAY_SCREEN_STR = "how to play screen.png";
 std::string FONT_NAME = "Monique-RegularRound20.otf";
 const int SCREEN_WIDTH = 680,
           SCREEN_HEIGHT = 480,
-          L_W_WIDTH = 200,
-          L_W_HEIGHT = 200,
+          L_W_WIDTH = 150,
+          L_W_HEIGHT = 150,
           RES_BUTTON_WIDTH = 100,
           RES_BUTTON_HEIGHT = 60,
           QUIT_BUTTON_WIDTH = 100,
           QUIT_BUTTON_HEIGHT = 60,
-          START_BUTTON_WIDTH = 350,
-          START_BUTTON_HEIGHT = 200,
+          START_BUTTON_WIDTH = 250,
+          START_BUTTON_HEIGHT = 80,
+          HOW_PLAY_BUTTON_W = 250,
+          HOW_PLAY_BUTTON_H = 80,
+          HOW_PLAY_SCREEN_W = 330,
+          HOW_PLAY_SCREEN_H = 440,
           FONT_SIZE = 16;
 int HIGHSCR_X = 0, HIGHTSCR_Y = 0,
     SCORE_X = 300, SCORE_Y = 0,
-    COUNT_PLAY_X = 600, COUNT_PLAY_Y = 0;
+    COUNT_PLAY_X = 600, COUNT_PLAY_Y = 0,
+    HOW_PLAY_SCREEN_X = SCREEN_WIDTH/2 - HOW_PLAY_SCREEN_W/2, HOW_PLAY_SCREEN_Y= 20;
 
-SDL_Rect L_W_Rect ={SCREEN_WIDTH/2 - L_W_WIDTH/2 , SCREEN_HEIGHT/2 - L_W_HEIGHT/2 -140, L_W_WIDTH, L_W_HEIGHT};
+SDL_Rect L_W_Rect = {SCREEN_WIDTH/2 - L_W_WIDTH/2 , SCREEN_HEIGHT/2 - L_W_HEIGHT/2 -140, L_W_WIDTH, L_W_HEIGHT};
 SDL_Rect RESTART_BUTTON_RECT = {SCREEN_WIDTH/2 - RES_BUTTON_WIDTH/2, SCREEN_HEIGHT - RES_BUTTON_HEIGHT/2 - 200, RES_BUTTON_WIDTH, RES_BUTTON_HEIGHT};
 SDL_Rect QUIT_BUTTON_RECT = {SCREEN_WIDTH/2 - QUIT_BUTTON_WIDTH/2, SCREEN_HEIGHT - QUIT_BUTTON_HEIGHT/2 - 100, QUIT_BUTTON_WIDTH, QUIT_BUTTON_HEIGHT};
 SDL_Rect START_BUTTON_RECT = {SCREEN_WIDTH/2 - START_BUTTON_WIDTH/2, SCREEN_HEIGHT/2 - RES_BUTTON_HEIGHT/2 -100, START_BUTTON_WIDTH, START_BUTTON_HEIGHT};
-
+SDL_Rect HOW_PLAY_BUTTON_RECT = { SCREEN_WIDTH/2 - HOW_PLAY_BUTTON_W/2 , SCREEN_HEIGHT/2 - HOW_PLAY_BUTTON_H/2 +100 , HOW_PLAY_BUTTON_W, HOW_PLAY_BUTTON_H};
+SDL_Rect HOW_PLAY_SCREEN_RECT = {HOW_PLAY_SCREEN_X, HOW_PLAY_SCREEN_Y, HOW_PLAY_SCREEN_W, HOW_PLAY_SCREEN_H};
 class Hole
 {
 private:
@@ -49,8 +57,8 @@ private:
     void randomPosition()
     {
         srand(time(NULL));
-        posX = rand()% (SCREEN_WIDTH - HOLE_WIDTH/2);
-        posY = rand()% (SCREEN_HEIGHT - HOLE_HEIGHT/2);
+        posX = rand()% (SCREEN_WIDTH - HOLE_WIDTH/2 -10 +1) +10;
+        posY = rand()% (SCREEN_HEIGHT - HOLE_HEIGHT/2 -10 +1) +10 ;
     }
 public:
 
@@ -92,8 +100,9 @@ int main(int argc, char* argv[])
     int highestScore = 0;
     SDL_Window* gWindow = NULL;
     SDL_Renderer* gRenderer = NULL;
+    bool howPlayCheck = false;
     renderTexture ballTexture, arrowTexture, holeTexture, loseTexture, winTexture;
-    renderTexture restartTexture, quitTexture, startTexture;
+    renderTexture restartTexture, quitTexture, startTexture, howPlayTexture, howPlayScreen;
     renderTexture highScoreTexture, scoreTexture, countPlayTexture;
     TTF_Font* font = NULL;
     Hole hole ;
@@ -105,7 +114,8 @@ int main(int argc, char* argv[])
         if (!loadMedia(ballTexture,gRenderer,INPUT_BALL) || !loadMedia(arrowTexture,gRenderer,INPUT_ARROW)||!loadMedia(holeTexture,gRenderer, INPUT_HOLE)|| 
             !loadMedia(loseTexture,gRenderer,LOSE_BKG) || !loadMedia(winTexture, gRenderer, WIN_BKG)||
             !loadMedia(restartTexture,gRenderer,RESTART_BUTTON_STR)|| !loadMedia(quitTexture,gRenderer, QUIT_BUTTON_STR),
-            !loadMedia(startTexture,gRenderer,START_BUTTON_STR))
+            !loadMedia(startTexture,gRenderer,START_BUTTON_STR), !loadMedia(howPlayTexture, gRenderer, HOW_PLAY_STR),
+            !loadMedia(howPlayScreen,gRenderer,HOW_PLAY_SCREEN_STR))
         {
             std::cout<<"Failed to load media"<<std::endl;
         }
@@ -119,6 +129,7 @@ int main(int argc, char* argv[])
             Button restartButton(RESTART_BUTTON_RECT,restartTexture);
             Button quitButton(QUIT_BUTTON_RECT,quitTexture);
             Button startButton(START_BUTTON_RECT,startTexture);
+            Button howPlayButton(HOW_PLAY_BUTTON_RECT, howPlayTexture);
             bool start = false;
             while (quit == false)
             {
@@ -148,6 +159,14 @@ int main(int argc, char* argv[])
                     if (start == false && startButton.handleEvent(&e) == true)
                     {
                         start = true;
+                    }else
+                    if (howPlayCheck == false && howPlayButton.handleEvent(&e) == true)
+                    {
+                        howPlayCheck = true;
+                    }
+                    if (howPlayCheck == true && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+                    {
+                        howPlayCheck = false;
                     }
                 }
                 
@@ -188,7 +207,16 @@ int main(int argc, char* argv[])
                         quitButton.render(gRenderer);
                     }
                 }else
-                    startButton.render(gRenderer);
+                {
+                    if (howPlayCheck == false)
+                    {
+                        startButton.render(gRenderer);
+                        howPlayButton.render(gRenderer);
+                    }else
+                    {
+                        howPlayScreen.renderBkg(gRenderer,HOW_PLAY_SCREEN_RECT);
+                    }
+                }
                 SDL_RenderPresent( gRenderer);
             }
         }

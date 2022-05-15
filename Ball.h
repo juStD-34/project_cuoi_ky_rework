@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include "Button.h"
 #include<ctime>
-const int MAX_PLAY = 4;
+const int MAX_PLAY = 5;
 class Ball
 {
 private:
@@ -17,8 +17,8 @@ private:
     void randomPosition(const int SCREEN_WIDTH, const int SCREEN_HEIGHT)
     {
         srand(time(NULL));
-        PosX = rand()% (SCREEN_WIDTH - BALL_WIDTH);
-        PosY = rand()% (SCREEN_HEIGHT - BALL_HEIGHT);
+        PosX = rand()% (SCREEN_WIDTH - BALL_WIDTH  - 10 + 1) +10;
+        PosY = rand()% (SCREEN_HEIGHT - BALL_HEIGHT -10 +1) +10;
     }
 public:
     bool isWin ;

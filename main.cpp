@@ -2,55 +2,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "src/Ball.h"
+#include <SDL_mixer.h>
 #include <time.h>
 #include <cstdlib>
 using namespace std;
-
-SDL_Color WHITE = {255 , 255 , 255, 255},
-          BLACK = {0, 0, 0, 255},
-          GREEN = {0, 255, 0, 255},
-          RED = {255, 0, 0, 255},
-          BLUE = {0, 0, 255, 255},
-          SANDY_BROWN = {244,164, 96, 255}
-          ;
-const std::string INPUT_BALL = "image/ball4.png",
-                  INPUT_ARROW = "image/arrow2.png",
-                  INPUT_HOLE = "image/hole.png",
-                  WIN_BKG = "image/win background.png",
-                  LOSE_BKG = "image/lose background.png",
-                  RESTART_BUTTON_STR = "image/restart_button.png",
-                  QUIT_BUTTON_STR = "image/quit_button.png",
-                  START_BUTTON_STR = "image/start_button(1).png",
-                  HOW_PLAY_STR = "image/how_play_button.png",
-                  HOW_PLAY_SCREEN_STR = "image/how to play screen.png";
-std::string FONT_NAME = "Monique-RegularRound20.otf";
-const int SCREEN_WIDTH = 680,
-          SCREEN_HEIGHT = 480,
-          L_W_WIDTH = 150,
-          L_W_HEIGHT = 150,
-          RES_BUTTON_WIDTH = 100,
-          RES_BUTTON_HEIGHT = 60,
-          QUIT_BUTTON_WIDTH = 100,
-          QUIT_BUTTON_HEIGHT = 60,
-          START_BUTTON_WIDTH = 250,
-          START_BUTTON_HEIGHT = 80,
-          HOW_PLAY_BUTTON_W = 250,
-          HOW_PLAY_BUTTON_H = 80,
-          HOW_PLAY_SCREEN_W = 330,
-          HOW_PLAY_SCREEN_H = 440,
-          FONT_SIZE = 16;
-int HIGHSCR_X = 0, HIGHTSCR_Y = 0,
-    SCORE_X = 300, SCORE_Y = 0,
-    COUNT_PLAY_X = 600, COUNT_PLAY_Y = 0,
-    HOW_PLAY_SCREEN_X = SCREEN_WIDTH/2 - HOW_PLAY_SCREEN_W/2, HOW_PLAY_SCREEN_Y= 20;
-
-SDL_Rect L_W_Rect = {SCREEN_WIDTH/2 - L_W_WIDTH/2 , SCREEN_HEIGHT/2 - L_W_HEIGHT/2 -140, L_W_WIDTH, L_W_HEIGHT};
-SDL_Rect RESTART_BUTTON_RECT = {SCREEN_WIDTH/2 - RES_BUTTON_WIDTH/2, SCREEN_HEIGHT - RES_BUTTON_HEIGHT/2 - 200, RES_BUTTON_WIDTH, RES_BUTTON_HEIGHT};
-SDL_Rect QUIT_BUTTON_RECT = {SCREEN_WIDTH/2 - QUIT_BUTTON_WIDTH/2, SCREEN_HEIGHT - QUIT_BUTTON_HEIGHT/2 - 100, QUIT_BUTTON_WIDTH, QUIT_BUTTON_HEIGHT};
-SDL_Rect START_BUTTON_RECT = {SCREEN_WIDTH/2 - START_BUTTON_WIDTH/2, SCREEN_HEIGHT/2 - RES_BUTTON_HEIGHT/2 -100, START_BUTTON_WIDTH, START_BUTTON_HEIGHT};
-SDL_Rect HOW_PLAY_BUTTON_RECT = { SCREEN_WIDTH/2 - HOW_PLAY_BUTTON_W/2 , SCREEN_HEIGHT/2 - HOW_PLAY_BUTTON_H/2 +100 , HOW_PLAY_BUTTON_W, HOW_PLAY_BUTTON_H};
-SDL_Rect HOW_PLAY_SCREEN_RECT = {HOW_PLAY_SCREEN_X, HOW_PLAY_SCREEN_Y, HOW_PLAY_SCREEN_W, HOW_PLAY_SCREEN_H};
-
 
 class Hole
 {
@@ -91,12 +46,6 @@ public:
     }
 };
 
-bool init(SDL_Window*& gWindow, SDL_Renderer*& gRenderer);
-bool loadMedia(renderTexture& rendedTexture, SDL_Renderer* & gRenderer, const std::string& path);
-bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::string& textString, TTF_Font* & font);
-void close (renderTexture& ballTexture, renderTexture& arrowTexture , renderTexture& holeTexture,  SDL_Window*& gWindow, SDL_Renderer*& gRenderer, TTF_Font* font);
-
-
 int main(int argc, char* argv[])
 {
     int highestScore = 0;
@@ -108,6 +57,8 @@ int main(int argc, char* argv[])
     renderTexture highScoreTexture, scoreTexture, countPlayTexture;
     TTF_Font* font = NULL;
     Hole hole ;
+    Mix_Music* bkgSound = NULL;
+    Mix_Chunk* ballSound = NULL;
     if (!init(gWindow,gRenderer))
     {
         std::cout<<"Failed to init"<<std::endl;
@@ -117,16 +68,16 @@ int main(int argc, char* argv[])
             !loadMedia(loseTexture,gRenderer,LOSE_BKG) || !loadMedia(winTexture, gRenderer, WIN_BKG)||
             !loadMedia(restartTexture,gRenderer,RESTART_BUTTON_STR)|| !loadMedia(quitTexture,gRenderer, QUIT_BUTTON_STR),
             !loadMedia(startTexture,gRenderer,START_BUTTON_STR), !loadMedia(howPlayTexture, gRenderer, HOW_PLAY_STR),
-            !loadMedia(howPlayScreen,gRenderer,HOW_PLAY_SCREEN_STR))
+            !loadMedia(howPlayScreen,gRenderer,HOW_PLAY_SCREEN_STR),
+            !loadMusicMedia(bkgSound, ballSound))
         {
             std::cout<<"Failed to load media"<<std::endl;
         }
         else
         {
             bool quit = false;
-
             SDL_Event e;
-
+            std::cout<<bkgSound;
             Ball ball(SCREEN_WIDTH,SCREEN_HEIGHT);
             Button restartButton(RESTART_BUTTON_RECT,restartTexture);
             Button quitButton(QUIT_BUTTON_RECT,quitTexture);
@@ -161,6 +112,7 @@ int main(int argc, char* argv[])
                     if (start == false && startButton.handleEvent(&e) == true)
                     {
                         start = true;
+                        Mix_PlayMusic(bkgSound, -1);
                     }else
                     if (howPlayCheck == false && howPlayButton.handleEvent(&e) == true)
                     {
@@ -173,7 +125,8 @@ int main(int argc, char* argv[])
                 }
                 
                 SDL_Point p = hole.getPos();
-                if (ball.isLose == false && ball.isWin == false && start == true) ball.move(SCREEN_WIDTH, SCREEN_HEIGHT,p.x, p.y);
+                if (ball.isLose == false && ball.isWin == false && start == true)
+                     ball.move(SCREEN_WIDTH, SCREEN_HEIGHT,p.x, p.y, ballSound);
 
                 SDL_SetRenderDrawColor(gRenderer, WHITE.r, WHITE.g, WHITE.b, WHITE.a);
                 SDL_RenderClear( gRenderer);
@@ -217,6 +170,7 @@ int main(int argc, char* argv[])
                     }else
                     {
                         howPlayScreen.renderBkg(gRenderer,HOW_PLAY_SCREEN_RECT);
+                        
                     }
                 }
                 SDL_RenderPresent( gRenderer);
@@ -226,106 +180,4 @@ int main(int argc, char* argv[])
 
     close(ballTexture, arrowTexture,holeTexture ,gWindow, gRenderer, font);
     return 0;
-}
-
-bool init(SDL_Window*& gWindow, SDL_Renderer*& gRenderer)
-{
-    bool success = true;
-
-    if (SDL_Init (SDL_INIT_VIDEO) < 0)
-    {
-        std::cout<<"SDL couldn't init "<<SDL_GetError();
-        success = false;
-    }
-    else
-    {
-        if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1"))
-        {
-            std::cout<<"Linear texture filtering not enable!";
-        }
-        gWindow = SDL_CreateWindow("Ball game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
-        if (gWindow == NULL)
-        {
-            std::cout<<"Window coudn't create "<<SDL_GetError();
-            success = false;
-        }
-        else
-        {
-            gRenderer = SDL_CreateRenderer (gWindow, -1, SDL_RENDERER_ACCELERATED| SDL_RENDERER_PRESENTVSYNC
-            );
-            if (gRenderer == NULL)
-            {
-                std::cout<<"Renderer could not be created! "<<SDL_GetError();
-                success = false;
-            }
-            else
-            {
-                SDL_SetRenderDrawColor(gRenderer,BLUE.r, BLUE.g, BLUE.b, BLUE.a);
-
-                int imgFlags = IMG_INIT_PNG;
-                if ( ! (IMG_Init(imgFlags) & imgFlags) )
-                {
-                    std::cout<<"SDL_image couldn't init! "<<IMG_GetError();
-                    success = false;
-                }
-
-                if (TTF_Init() == -1)
-                {
-                    std::cout<<"SDL_ttf could not to init"<<TTF_GetError();
-                    success = false;
-                }
-            }
-        }
-    }
-    return success;
-}
-
-bool loadMedia(renderTexture& rendedTexture, SDL_Renderer* & gRenderer,const std::string& path)
-{
-    bool success = true;
-
-    if (rendedTexture.loadFromFile(path, gRenderer) == false)
-    {
-        success = false;
-        std::cout<<"Failed to load "<<path<<"texture";
-    } 
-    return success;
-}
-
-bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::string& textString, TTF_Font* & font)
-{
-    bool success= true;
-
-    font = TTF_OpenFont(FONT_NAME.c_str(), FONT_SIZE);
-    if (font == NULL)
-    {
-        std::cout<<"Failed to load font !"<<TTF_GetError();
-        success = false;
-    }else
-    {
-        if (rendTexture.loadFromRenderedText(textString,gRenderer,font,BLACK) == false)
-        {
-            std::cout<<"Failed to render text texture!";
-            success = false;
-        }
-    }
-
-    return success;
-
-}
-void close (renderTexture& ballTexture,renderTexture& arrowTexture ,renderTexture& holeTexture, SDL_Window*& gWindow, SDL_Renderer*& gRenderer, TTF_Font* font)
-{
-    ballTexture.free();
-    holeTexture.free();
-    arrowTexture.free();
-    TTF_CloseFont(font);
-    SDL_DestroyRenderer(gRenderer);
-    SDL_DestroyWindow( gWindow);
-    font = NULL;
-    gRenderer = NULL;
-    gWindow = NULL;
-
-    TTF_Quit();
-    IMG_Quit();
-    SDL_Quit();
 }

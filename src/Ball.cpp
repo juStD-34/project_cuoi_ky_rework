@@ -1,10 +1,10 @@
 #include "Ball.h"
 #include <cmath>
 
-
 using namespace std;
 
 const int ARROW_WIDTH = 32, ARROW_HEIGHT = 16;
+
 Ball::Ball(const int SCREEN_WIDTH, const int SCREEN_HEIGHT)
 {
     PosX = SCREEN_WIDTH/2 - BALL_WIDTH/2;
@@ -63,7 +63,7 @@ void Ball::handleEvent( SDL_Event& e )
     }
 }
 
-void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int& holeY)
+void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int& holeY, Mix_Chunk* ballSound)
 {
     if (isRolling == false && isWin == false&& isLose == false)
     {
@@ -81,12 +81,14 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
             degeree = 180 - degeree;
             PosX = 0;
             score +=100;
+            Mix_PlayChannel( -1, ballSound, 0);
         }
         if (PosX + BALL_WIDTH > SCREEN_WIDTH)
         {
             degeree = 180 - degeree;
             PosX = SCREEN_WIDTH - BALL_WIDTH;
             score +=100;
+            Mix_PlayChannel( -1, ballSound, 0);
         }
         PosY += VelY;
 
@@ -96,6 +98,7 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
             if (PosY <0) PosY =0;
             if (PosY + BALL_HEIGHT > SCREEN_HEIGHT) PosY = SCREEN_HEIGHT - BALL_HEIGHT;
             score +=100;
+            Mix_PlayChannel( -1, ballSound, 0);
         }
         if (ballInHole(holeX,holeY) == true)    
         {
@@ -107,7 +110,7 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
             isRolling = false;
             speed =0;
             countPlay ++;
-            score -= 200;
+            if (score >= 200) score -= 200;else score = 0;
             if (countPlay >= MAX_PLAY ) isLose = true;
             degeree = -90;
         }
@@ -122,7 +125,7 @@ void Ball::render(renderTexture& ballTexture, SDL_Renderer*& gRenderer, renderTe
     {
         if (isRolling == false)
         {
-            SDL_Point center = {0,6/2 }; // arrow height /2
+            SDL_Point center = {0,6/2}; // arrow height /2
             int arrowX = PosX + BALL_WIDTH/2 - 2 ;
             int arrowY = PosY + BALL_HEIGHT/2 - 2;
             gArrow.render(gRenderer,arrowX ,arrowY , NULL, degeree, &center, SDL_FLIP_NONE);

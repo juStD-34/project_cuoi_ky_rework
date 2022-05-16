@@ -1,8 +1,9 @@
-#pragma
+#pragma once
 
 #include <SDL.h>
-#include "Button.h"
+#include "init.h"
 #include<ctime>
+#include <SDL_mixer.h>
 const int MAX_PLAY = 5;
 class Ball
 {
@@ -35,7 +36,7 @@ public:
     Ball(const int SCREEN_WIDTH, const int SCREEN_HEIGHT);
     ~Ball();
     void handleEvent( SDL_Event& e );
-    void move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int& holeY);
+    void move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int& holeY, Mix_Chunk* ballSound);
     void render(renderTexture& ballTexture, SDL_Renderer*& gRenderer, renderTexture& gArrow);
 
     void resetBall(const int SCREEN_WIDTH, const int SCREEN_HEIGHT);

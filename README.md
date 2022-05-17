@@ -1,7 +1,7 @@
 # project_cuoi_ky_rework
 
 
-Tên : Ball Game (Lấy ý tưởng dựa trên bounce game, được xây dựng và viết code bởi Đỗ Minh Sáng)
+Tên : Ball Game (Lấy ý tưởng dựa trên bounce game, được xây dựng, viết code bởi Đỗ Minh Sáng)
 
 Phát triển :
   - Xây dựng màn hình chính, bóng, di chuyển, đích

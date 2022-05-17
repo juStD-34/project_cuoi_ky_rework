@@ -2,7 +2,6 @@
 
 
 1. Hướng dẫn cài đặt :
-  - Vào nhánh master
   - Fork về your repo
   - Dùng lệnh git clone "...." (đường link đến repo)
   - Copy file SDL vào trong máy, lấy đường link dẫn đến folder include và lib để dùng vào lệnh dịch

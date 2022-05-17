@@ -27,4 +27,3 @@
     + Tạo chế độ 2 người chơi 
     + Thêm class Wall để tạo bản đồ gồm nhiều tường
     + Chuyển lực từ điểm thành Vector để tính được hướng và thêm tính năng lực
-  - 

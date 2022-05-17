@@ -61,9 +61,9 @@ const std::string INPUT_BALL = "image/ball4.png",
                   MUSIC_BUTTON_STR = "image/music button.png",
                   MUTE_BUTTON_STR = "image/music_mute.png",
                   HOW_PLAY_SCREEN_STR = "image/how to play screen.png",
-                  BKG_SOUND = "bkg_sound.wav",
-                  BALL_DROP = "ball_drop.wav";
-std::string FONT_NAME = "Monique-RegularRound20.otf";
+                  BKG_SOUND = "media/bkg_sound.wav",
+                  BALL_DROP = "media/ball_drop.wav";
+std::string FONT_NAME = "media/Monique-RegularRound20.otf";
 
 
 
@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
                 {
                     std::string highScoreSTR ="HIGH SCORE : " + std::to_string(highestScore);
                     std::string scoreSTR = "SCORE : " + std::to_string(ball.score);
-                    std::string countPlaySTR ="TURN : " + std::to_string(ball.countPlay);
+                    std::string countPlaySTR ="TURN : " + std::to_string(ball.countPlay+1);
                     if (!loadFontMedia(highScoreTexture, gRenderer, highScoreSTR, font, FONT_NAME, FONT_SIZE, BLACK) || 
                         !loadFontMedia(scoreTexture, gRenderer, scoreSTR, font, FONT_NAME, FONT_SIZE, BLACK) ||
                         !loadFontMedia(countPlayTexture,gRenderer,countPlaySTR,font, FONT_NAME, FONT_SIZE, BLACK))

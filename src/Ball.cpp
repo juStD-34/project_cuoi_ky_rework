@@ -70,7 +70,7 @@ void Ball::move(const int SCREEN_WIDTH, const int SCREEN_HEIGHT, int& holeX, int
         degeree += angular;
     } else
     {
-        speed +=0.6;
+        speed +=0.4;
         VelX = std::cos(degeree* M_PI / 180) * BALL_VEL;
         VelY = std::sin(degeree* M_PI / 180) * BALL_VEL;
 

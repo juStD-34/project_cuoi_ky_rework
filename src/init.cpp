@@ -1,7 +1,7 @@
 #include "init.h"
 
 
-bool init(SDL_Window*& gWindow, SDL_Renderer*& gRenderer)
+bool init(SDL_Window*& gWindow, SDL_Renderer*& gRenderer,const int& SCREEN_HEIGHT,const int& SCREEN_WIDTH, SDL_Color color)
 {
     bool success = true;
 
@@ -33,7 +33,7 @@ bool init(SDL_Window*& gWindow, SDL_Renderer*& gRenderer)
             }
             else
             {
-                SDL_SetRenderDrawColor(gRenderer,BLUE.r, BLUE.g, BLUE.b, BLUE.a);
+                SDL_SetRenderDrawColor(gRenderer,color.r, color.g, color.b, color.a);
 
                 int imgFlags = IMG_INIT_PNG;
                 if ( ! (IMG_Init(imgFlags) & imgFlags) )
@@ -71,7 +71,8 @@ bool loadMedia(renderTexture& rendedTexture, SDL_Renderer* & gRenderer,const std
     return success;
 }
 
-bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::string& textString, TTF_Font* & font)
+
+bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::string& textString, TTF_Font* & font, std::string& FONT_NAME,const int& FONT_SIZE, SDL_Color color)
 {
     bool success= true;
 
@@ -82,7 +83,7 @@ bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::s
         success = false;
     }else
     {
-        if (rendTexture.loadFromRenderedText(textString,gRenderer,font,BLACK) == false)
+        if (rendTexture.loadFromRenderedText(textString,gRenderer,font,color) == false)
         {
             std::cout<<"Failed to render text texture!";
             success = false;
@@ -93,7 +94,8 @@ bool loadFontMedia(renderTexture& rendTexture, SDL_Renderer* & gRenderer, std::s
 
 }
 
-bool loadMusicMedia(Mix_Music*& bkgMusic, Mix_Chunk*& ballSound)
+
+bool loadMusicMedia(Mix_Music*& bkgMusic, Mix_Chunk*& ballSound,const std::string& BKG_SOUND, const std::string& BALL_DROP)
 {
     bool success = true;
     bkgMusic = Mix_LoadMUS(BKG_SOUND.c_str());
@@ -110,11 +112,20 @@ bool loadMusicMedia(Mix_Music*& bkgMusic, Mix_Chunk*& ballSound)
     }
     return success;
 }
-void close (renderTexture& ballTexture,renderTexture& arrowTexture ,renderTexture& holeTexture, SDL_Window*& gWindow, SDL_Renderer*& gRenderer, TTF_Font* font)
+
+
+void close (renderTexture& ballTexture,renderTexture& arrowTexture ,renderTexture& holeTexture, SDL_Window*& gWindow, SDL_Renderer*& gRenderer, TTF_Font* font, Mix_Music* bkgSound, Mix_Chunk* ballSound)
 {
+    Mix_FreeChunk(ballSound);
+    ballSound = NULL;
+    
+    Mix_FreeMusic(bkgSound);
+    bkgSound = NULL;
+
     ballTexture.free();
     holeTexture.free();
     arrowTexture.free();
+
     TTF_CloseFont(font);
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow( gWindow);
@@ -122,6 +133,7 @@ void close (renderTexture& ballTexture,renderTexture& arrowTexture ,renderTextur
     gRenderer = NULL;
     gWindow = NULL;
 
+    Mix_Quit();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();

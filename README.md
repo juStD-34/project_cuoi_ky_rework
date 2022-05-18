@@ -13,9 +13,14 @@
   - Mỗi lần bóng đập tường người chơi được 100 điểm, khi kết thúc lượt bắn sẽ bị trừ 200 điểm. 
 3. Mô tả các chức năng :
   - Cài màn hình chính
+  ![image](https://user-images.githubusercontent.com/91711287/169048019-4d5c730e-30f8-487e-927c-69f5187263bc.png)
   - Cài logic bật nảy cho game bằng góc angle
   - Render màn hình bắt đầu game, end game, chức năng restart,...
   - ![image](https://user-images.githubusercontent.com/91711287/169046259-a4f6429e-8f87-4776-9ce7-432b7850ad4e.png)
+  - ![image](https://user-images.githubusercontent.com/91711287/169048325-1868df1a-38f8-477c-8d05-35393ba76e4c.png)
+  - ![image](https://user-images.githubusercontent.com/91711287/169048464-0f2fac4c-2914-4a97-be10-92910a8f6c4b.png)
+
+
 
 4. Các kỹ thuật lập trình
   - Dùng class

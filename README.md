@@ -6,7 +6,7 @@
   - Dùng lệnh git clone "...." (đường link đến repo)
   - Copy file SDL vào trong máy, lấy đường link dẫn đến folder include và lib để dùng vào lệnh dịch
   - Mở file chạy lệnh trong cmd :
-       g++ main.cpp src/Ball.cpp src/renderTexture.cpp src/Button.cpp src/init.cpp -I\...\include\SDL2 -L\...\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer  -o main.exe;
+       g++ main.cpp src/Ball.cpp src/renderTexture.cpp src/Button.cpp src/init.cpp -ID:\dev-lib\i686-32bit\include\SDL2 -LD:\dev-lib\i686-32bit\lib -w -Wl,-subsystem,windows -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer  -o main.exe;
    - Chạy file main.exe
 2. Mô tả chung về trò chơi :
   - Người chơi điều khiển quá bóng sao cho bóng bay vào lỗ, 
@@ -29,7 +29,7 @@
   - ...
   - 
 5.Kết luận
-  - Điều tâm đắc : đã tự suy nghĩ, vận dụng các kiến thức học được trong khóa lập trình nâng cao và kết hợp với việc học về đồ họa để tọa nên 1 game cơ bản 
+  - Điều tâm đắc : đã tự suy nghĩ, vận dụng các kiến thức học được trong khóa lập trình nâng cao và kết hợp với việc học về đồ họa để tạo nên 1 game cơ bản 
   - Học thêm được nhiều tính năng, sử dụng tốt hơn SDL, chia file và sử dụng hợp lý việc chia file
   - Hướng phát triển :
     + Tạo chế độ 2 người chơi 

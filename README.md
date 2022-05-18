@@ -27,7 +27,9 @@
   - Chia file, tổ chức code, chỉnh code
   - Sử dụng đồ họa SDL2
   - ...
+  - 
 5.Kết luận
+  - Điều tâm đắc : đã tự suy nghĩ, vận dụng các kiến thức học được trong khóa lập trình nâng cao và kết hợp với việc học về đồ họa để tọa nên 1 game cơ bản 
   - Học thêm được nhiều tính năng, sử dụng tốt hơn SDL, chia file và sử dụng hợp lý việc chia file
   - Hướng phát triển :
     + Tạo chế độ 2 người chơi 

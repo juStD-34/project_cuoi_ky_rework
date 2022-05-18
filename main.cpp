@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
                     else
                     if ((ball.isWin == true || ball.isLose == true )&& restartButton.handleEvent(&e) == 1)
                     {
-                        if (ball.score > highestScore) highestScore = ball.score;
+                        if (ball.score > highestScore && ball.isLose == false) highestScore = ball.score;
                         ball.resetBall(SCREEN_WIDTH,SCREEN_HEIGHT);
                         hole.resetHole(SCREEN_WIDTH, SCREEN_HEIGHT);
                         break;

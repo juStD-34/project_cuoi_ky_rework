@@ -42,10 +42,8 @@ void Ball::handleEvent( SDL_Event& e )
                 case SDLK_RIGHT: angular +=1; break;
             }
         }
-        //If a key was released
         else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
         {
-            //Adjust the velocity
             switch( e.key.keysym.sym )
             {
                 case SDLK_LEFT: angular += 1; break;

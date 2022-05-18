@@ -15,6 +15,8 @@
   - Cài màn hình chính
   - Cài logic bật nảy cho game bằng góc angle
   - Render màn hình bắt đầu game, end game, chức năng restart,...
+  - ![image](https://user-images.githubusercontent.com/91711287/169046259-a4f6429e-8f87-4776-9ce7-432b7850ad4e.png)
+
 4. Các kỹ thuật lập trình
   - Dùng class
   - Chia file, tổ chức code, chỉnh code

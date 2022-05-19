@@ -32,6 +32,7 @@
   - Điều tâm đắc : đã tự suy nghĩ, vận dụng các kiến thức học được trong khóa lập trình nâng cao và kết hợp với việc học về đồ họa để tạo nên 1 game cơ bản 
   - Học thêm được nhiều tính năng, sử dụng tốt hơn SDL, chia file và sử dụng hợp lý việc chia file
   - Hướng phát triển :
+    + Lưu high score vào file để up lên mỗi lần chơi
     + Tạo chế độ 2 người chơi 
     + Thêm class Wall để tạo bản đồ gồm nhiều tường
     + Chuyển lực từ điểm thành Vector để tính được hướng và thêm tính năng lực
